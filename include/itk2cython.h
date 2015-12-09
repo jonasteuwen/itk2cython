@@ -196,15 +196,21 @@ void itk2py( itk::Image<PixelType, numDimensions>* itk_image,
                     orientation,
                     origin,
                     dim );
+					
+	// debugging
+	// typedef  itk::ImageFileWriter< ImageType  > WriterType;
+	// typename WriterType::Pointer writer = WriterType::New();
+	// writer->SetFileName("debug_itk2py.nii");
+	// writer->SetInput(itk_image);
+	// writer->Update();
 
     // copy pixel data
-    /* PixelType* data = itk_image->GetBufferPointer(); */
-    /* size_t nb_pixels = 1; */
-    /* for ( int d = 0; d < numDimensions; d++ ) */
-    /*     nb_pixels *= dim[d]; */
-    
-    /* for ( size_t i = 0; i < nb_pixels; i++ ) */
-    /*     img[i] = data[i]; */
+     PixelType* data = itk_image->GetBufferPointer(); 
+     size_t nb_pixels = 1; 
+     for ( int d = 0; d < numDimensions; d++ )
+         nb_pixels *= dim[d]; 
+
+	 memcpy(img, data, nb_pixels*sizeof(PixelType));
 }
 
 

@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 2.6)
+cmake_minimum_required(VERSION 2.8)
 
 project(PyITK)
 
 find_package(ITK REQUIRED)
-if (USE_ITK_FILE)
-  include(${USE_ITK_FILE})
-endif(USE_ITK_FILE)
+if (ITK_USE_FILE)
+  include(${ITK_USE_FILE})
+endif(ITK_USE_FILE)
 
 find_package(PythonLibs REQUIRED)
 if(USE_PYTHONLIBS_FILE)
@@ -29,8 +29,6 @@ if(NUMPY_ERR)
   message(SEND_ERROR "WARNING: NumPy header not found.")
 endif(NUMPY_ERR)
 set(PYTHON_INCLUDE_PATH ${PYTHON_INCLUDE_PATH} ${NUMPY_INCLUDE_PATH})
- 
-
 
 #TODO: Windows? Need a FindCython.cmake
 find_program(CYTHON_EXECUTABLE cython /usr/bin /usr/local/bin)

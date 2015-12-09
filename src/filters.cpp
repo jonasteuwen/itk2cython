@@ -16,13 +16,13 @@ void _AHE_float_3( float* img,
                      origin,
                      dim );
     
-    // AHE< ImageType >( itk_image,
-    //                   radius );
+    AHE< ImageType >( itk_image,
+                      radius );
 
-    // itk2py<float,3>( itk_image,
-    //                  img,
-    //                  pixelSize,
-    //                  orientation,
-    //                  origin,
-    //                  dim );
+    itk2py<float,3>( itk_image,
+                     img,
+                     pixelSize,
+                     orientation,
+                     origin,
+                     dim );
 }

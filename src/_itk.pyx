@@ -91,5 +91,7 @@ def AHE_float_3( np.ndarray[float, ndim=3,  mode="c"] img,
                    <double*> origin.data,
                    <int*> dim.data,
                    radius )
+				   
+    return img, header
 
 

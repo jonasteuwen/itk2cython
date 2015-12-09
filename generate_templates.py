@@ -8,16 +8,6 @@ from string import Template
 source_dir = sys.argv[1]
 build_dir = sys.argv[2]
 
-# with open(source_dir + "/include/templates.h") as fin: text = fin.read()
-
-# print text.split("template")
-
-class Compound(object):
-    def init( name, t, types ):
-        self.name = name
-        self.t = t
-        self.types = types
-
 types = {
     "char" : "int8",
     "uchar" : "uint8",
@@ -29,24 +19,12 @@ types = {
     "double" : "float64"
     }
 
-# compound_types = {
-#     "rgb" : "itk::RGBPixel< $type >",
-#     "rgba" : "itk::RGBAPixel< $type >"
-#     }
+compound_types = {
+    "rgb" : "itk::RGBPixel< $type >",
+    "rgba" : "itk::RGBAPixel< $type >"
+    }
 
-wrap_compound = {
-    2: [ Compound( "rgb", "itk::RGBPixel< $type >", ["uchar","ushort"] ),
-         Compound( "rgba", "itk::RGBAPixel< $type >", ["uchar","ushort"] ),
-         ]
-        }
-
-wrap_simple = {
-    2: [ "uchar",
-         "ushort" ],
-    4: types.keys()
-        }
-
-#dims = [3]#range(2,5)
+dims = [2,3,4]
 
 header_cpp = [
     """void _imread_${type}_${dim}( char* filename,
@@ -56,7 +34,7 @@ header_cpp = [
     """void _imread_${compoundType}_${type}_${dim}( char* filename,
                     ${type}* img );
 """,
-    
+
     """void _imwrite_${type}_${dim}( char* filename,
                      ${type}* img,
                      double* pixelSize,
@@ -65,7 +43,7 @@ header_cpp = [
                      int* dim );
 """ ]
 
-templates_cpp = [            
+templates_cpp = [
     """
 void _imread_${type}_${dim}( char* filename,
                              ${type}* img ) {
@@ -79,7 +57,7 @@ void _imread_${compoundType}_${type}_${dim}( char* filename,
     _imread_compound<${compoundTypeITK},${type},${dim}>( filename,
                                                       img );
 }
-""",    
+""",
     """
 void _imwrite_${type}_${dim}( char* filename,
                      ${type}* img,
@@ -141,26 +119,20 @@ if not os.path.exists( tmp_dir ):
 
 def wrap_cpp(t,f):
     s = Template(t)
-    if "compound" not in t:
-        for dim in wrap_simple:
-            for type in wrap_simple[type]:
+    for dim in dims:
+        for type in types.keys():
+            if "compound" not in t:
                 f.write( s.substitute( type=type, dim=str(dim)) )
-                f.write("\n")
-        f.write("\n")
-    else:
-        for dim in wrap_compound:
-            for compound in wrap_compound[dim]:
-                s2 = Template( compound.t )
-                for type in compound.types:
+            else:
+                for compound_type in compound_types.keys():
+                    s2 = Template( compound_types[compound_type] )
                     f.write( s.substitute( type=type,
                                            dim=str(dim),
-                                           compoundType=compound,
-                                           compoundTypeITK=s2.substitute(type=type)
-                                           )
-                             )
-                    f.write("\n")
+                                           compoundType=compound_type,
+                                           compoundTypeITK=s2.substitute(type=type)))
+            f.write("\n")
         f.write("\n")
-    
+
 f = open( tmp_dir + "/templates.h",'wb')
 f.write("""#ifndef TEMPLATES_H
 #define TEMPLATES_H
@@ -169,7 +141,7 @@ f.write("""#ifndef TEMPLATES_H
 
 for t in header_cpp:
     wrap_cpp(t,f)
-            
+
 f.write("""#endif""")
 f.close()
 
@@ -179,7 +151,7 @@ f.write("""#include "templates.h"\n""")
 for t in templates_cpp:
     wrap_cpp(t,f)
 
-f.close()    
+f.close()
 
 f = open( tmp_dir + "/_templates.pyx",'wb')
 f.write(
@@ -207,7 +179,7 @@ for t in header_cpp:
                                            )
                              )
                     f.write("\n")
-        f.write("\n")   
+        f.write("\n")
 
 f.write("\n")
 
@@ -233,8 +205,8 @@ for t in templates_py:
                                            )
                              )
                     f.write("\n")
-        f.write("\n")       
-         
+        f.write("\n")
+
 f.close()
 
 # Concatenate automatically generated files
