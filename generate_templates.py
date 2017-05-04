@@ -9,14 +9,14 @@ source_dir = sys.argv[1]
 build_dir = sys.argv[2]
 
 types = {
-    "char" : "int8",
-    "uchar" : "uint8",
-    "short" : "int16",
-    "ushort" : "uint16",
-    "int" : "int32",
-    "uint" : "uint32",
-    "float" : "float32",
-    "double" : "float64"
+    "char": "int8",
+    "uchar": "uint8",
+    "short": "int16",
+    "ushort": "uint16",
+    "int": "int32",
+    "uint": "uint32",
+    "float": "float32",
+    "double": "float64"
     }
 
 compound_types = {
@@ -133,7 +133,7 @@ def wrap_cpp(t,f):
             f.write("\n")
         f.write("\n")
 
-f = open( tmp_dir + "/templates.h",'wb')
+f = open( tmp_dir + "/templates.h",'w')
 f.write("""#ifndef TEMPLATES_H
 #define TEMPLATES_H
 
@@ -145,7 +145,7 @@ for t in header_cpp:
 f.write("""#endif""")
 f.close()
 
-f = open( tmp_dir + "/templates.cpp",'wb')
+f = open( tmp_dir + "/templates.cpp",'w')
 f.write("""#include "templates.h"\n""")
 
 for t in templates_cpp:
@@ -153,7 +153,7 @@ for t in templates_cpp:
 
 f.close()
 
-f = open( tmp_dir + "/_templates.pyx",'wb')
+f = open( tmp_dir + "/_templates.pyx",'w')
 f.write(
  """########## Automatically generated templated code ##########
 
